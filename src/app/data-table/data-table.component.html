@@ -1,10 +1,38 @@
-<div *ngIf="tableContents$ | async as data; else loading">
-    <div *ngFor="let item of data">
-      <h2>{{ item.title }}</h2>
-      <p [innerHTML]="item.snippet"></p>
-      <p>{{ item.timestamp }}</p>
-    </div>
-  </div>
-  <ng-template #loading>
-    <p>Loading...</p>
-  </ng-template>
+
+<div class="padding">
+<div class="flex-row space-between">
+  <h1>KLM Technical Interview - Dávid Gyöngyösi</h1>
+  <div class="align-bottom">
+  <mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput (input)="applyFilter($any($event.target).value)" placeholder="Filter data">
+    <mat-icon matSuffix aria-hidden="false" aria-label="Filter" fontIcon="search"></mat-icon>
+  </mat-form-field>
+</div>
+</div>
+
+<table mat-table [dataSource]="(tableContents$ | async) || []" class="mat-elevation-z8">
+  <ng-container matColumnDef="sectiontitle">
+    <th mat-header-cell *matHeaderCellDef class="table-header"> Section Title </th>
+    <td mat-cell *matCellDef="let element"> {{element.sectiontitle}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="title">
+    <th mat-header-cell *matHeaderCellDef class="table-header"> Title </th>
+    <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="sectionsnippet">
+    <th mat-header-cell *matHeaderCellDef class="table-header"> Section Snippet </th>
+    <td mat-cell *matCellDef="let element"> {{element.sectionsnippet}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="snippet">
+    <th mat-header-cell *matHeaderCellDef class="table-header"> Snippet </th>
+    <td mat-cell *matCellDef="let element"> {{element.snippet}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+</div>

@@ -1,17 +1,22 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideStore } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { dataReducer } from './app/_store/reducers'; // Ensure you import your reducer
+import { DataEffects } from './app/_store/effects'; // Ensure you import your effects
 
 bootstrapApplication(AppComponent, {
   providers: [
-    // Toodles Zone.js by adding the below
     provideExperimentalZonelessChangeDetection(),
     provideHttpClient(withFetch()),
-    provideRouter(routes), provideAnimationsAsync()
+    provideRouter(routes),
+    provideAnimationsAsync(),
+    provideStore({ data: dataReducer }), 
+    provideEffects([DataEffects])
   ],
 });

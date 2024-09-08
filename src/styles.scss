@@ -2,3 +2,28 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.align-bottom {
+    align-self: end;
+}
+
+.padding {
+    padding: 60px;
+}
+
+.table-header {
+    background: #00A1DE !important;
+}
+
+tr:nth-child(even) {
+    background-color:rgba(0, 161, 222, 0.1);
+  }
