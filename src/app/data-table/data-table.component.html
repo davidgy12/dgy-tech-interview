@@ -1,0 +1,10 @@
+<div *ngIf="tableContents$ | async as data; else loading">
+    <div *ngFor="let item of data">
+      <h2>{{ item.title }}</h2>
+      <p [innerHTML]="item.snippet"></p>
+      <p>{{ item.timestamp }}</p>
+    </div>
+  </div>
+  <ng-template #loading>
+    <p>Loading...</p>
+  </ng-template>

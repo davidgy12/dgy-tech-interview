@@ -1,13 +1,22 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { RouterOutlet, RouterModule, Router, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  imports: [RouterOutlet, RouterModule, CommonModule],
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
   title = 'dgy-klm-tech-interview';
+
+cdref: ChangeDetectorRef = inject(ChangeDetectorRef);
+router: Router = inject(Router);
+
+ngOnInit(): void {
+    this.cdref.detectChanges();
+    this.cdref.markForCheck();
+}
 }
