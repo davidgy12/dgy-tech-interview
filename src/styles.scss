@@ -27,3 +27,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 tr:nth-child(even) {
     background-color:rgba(0, 161, 222, 0.1);
   }
+
+  .truncate-content {
+    display: block; /* Ensure it's a block element */
+    width: 100%; /* Ensure it takes up full width of the cell */
+  }
+
+.pointer {
+    cursor: pointer;
+}
