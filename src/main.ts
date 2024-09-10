@@ -7,8 +7,8 @@ import { routes } from './app/app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-import { dataReducer } from './app/_store/reducers'; // Ensure you import your reducer
-import { DataEffects } from './app/_store/effects'; // Ensure you import your effects
+import { dataReducer } from './app/_store/reducers'; 
+import { DataEffects } from './app/_store/effects'; 
 
 bootstrapApplication(AppComponent, {
   providers: [

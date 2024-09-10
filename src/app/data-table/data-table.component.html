@@ -1,4 +1,3 @@
-
 <div class="padding">
 <div class="flex-row space-between">
   <h1>KLM Technical Interview - Dávid Gyöngyösi</h1>
@@ -11,46 +10,52 @@
 </div>
 </div>
 
-<table mat-table [dataSource]="(tableContents$ | async) || []" class="mat-elevation-z8">
-  <ng-container matColumnDef="sectiontitle">
-    <th mat-header-cell *matHeaderCellDef class="table-header"> Section Title </th>
-    <td mat-cell *matCellDef="let element"> {{element.sectiontitle}} </td>
-  </ng-container>
+<div *ngIf="loading$ | async; else tableContent">
+  <p>Loading...</p>
+</div>
 
-  <ng-container matColumnDef="title">
-    <th mat-header-cell *matHeaderCellDef class="table-header"> Title </th>
-    <td mat-cell *matCellDef="let element"> {{element.title}} </td>
-  </ng-container>
+<ng-template #tableContent>
+  <table mat-table [dataSource]="(tableContents$ | async) || []" class="mat-elevation-z8">
+    <ng-container matColumnDef="sectiontitle">
+      <th mat-header-cell *matHeaderCellDef class="table-header"> Section Title </th>
+      <td mat-cell *matCellDef="let element"> {{element.sectiontitle}} </td>
+    </ng-container>
 
-  <ng-container matColumnDef="sectionsnippet">
-    <th mat-header-cell *matHeaderCellDef class="table-header"> Section Snippet </th>
-    <td
-      mat-cell
-      *matCellDef="let element"
-      (click)="truncateContent?.el?.nativeElement.getAttribute('data-truncated') === 'true' && openPopup(element.sectionsnippet)"
-      (mouseenter)="onMouseEnter()"
-      (mouseleave)="onMouseLeave()"
-      class="pointer"
-      #tooltip="matTooltip"
-      [matTooltip]="truncateContent?.el?.nativeElement.getAttribute('data-truncated') === 'true' ? tooltipMessage : null"
-    >
-      <div class="truncate-content" truncateMultiLine #truncateContent="truncateMultiLine" [maxLines]="2">
-        {{element.sectionsnippet}}
-      </div>
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef class="table-header"> Title </th>
+      <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+    </ng-container>
 
-  <ng-container matColumnDef="snippet">
-    <th mat-header-cell *matHeaderCellDef class="table-header"> Snippet </th>
-    <td mat-cell *matCellDef="let element"> {{element.snippet}} </td>
-  </ng-container>
+    <ng-container matColumnDef="sectionsnippet">
+      <th mat-header-cell *matHeaderCellDef class="table-header"> Section Snippet </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        (click)="truncateContent?.el?.nativeElement.getAttribute('data-truncated') === 'true' && openPopup(element.sectionsnippet)"
+        (mouseenter)="onMouseEnter()"
+        (mouseleave)="onMouseLeave()"
+        [ngClass]="{'pointer': truncateContent?.el?.nativeElement?.getAttribute('data-truncated') === 'true'}"
+        #tooltip="matTooltip"
+        [matTooltip]="truncateContent?.el?.nativeElement?.getAttribute('data-truncated') === 'true' ? tooltipMessage : null"
+      >
+        <div class="truncate-content" truncate #truncateContent="truncate" [maxLines]="2">
+          {{element.sectionsnippet}}
+        </div>
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="timestamp">
-    <th mat-header-cell *matHeaderCellDef class="table-header"> Timestamp </th>
-    <td mat-cell *matCellDef="let element"> {{ formatDate(element.timestamp) }} </td>
-  </ng-container>
+    <ng-container matColumnDef="snippet">
+      <th mat-header-cell *matHeaderCellDef class="table-header"> Snippet </th>
+      <td mat-cell *matCellDef="let element"> {{element.snippet}} </td>
+    </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+    <ng-container matColumnDef="timestamp">
+      <th mat-header-cell *matHeaderCellDef class="table-header"> Timestamp </th>
+      <td mat-cell *matCellDef="let element"> {{ formatDate(element.timestamp) }} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</ng-template>
 </div>

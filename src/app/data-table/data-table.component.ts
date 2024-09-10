@@ -1,17 +1,17 @@
-import { ChangeDetectorRef, Component, inject, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 import { ApiService } from '../_services/api.service';
 import { DataModel, DataState } from '../_models/data.model';
-import { selectFilteredData, selectLoading } from '../_store/selectors';
+import { selectFilteredData } from '../_store/selectors';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { loadDataSuccess, setFilter } from '../_store/actions';
-import { TruncateMultiLineDirective } from '../_directives/truncate.directive';
+import { loadData, loadDataSuccess, setFilter } from '../_store/actions';
+import { TruncateDirective } from '../_directives/truncate.directive';
 import { PopupComponent } from '../popup/popup.component';
 import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import { DatePipe } from '@angular/common';
@@ -19,17 +19,17 @@ import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatLabel, MatFormField, MatInputModule, MatIconModule, TruncateMultiLineDirective, MatTooltipModule],
+  imports: [CommonModule, MatTableModule, MatLabel, MatFormField, MatInputModule, MatIconModule, TruncateDirective, MatTooltipModule],
   providers: [DatePipe],
-  templateUrl: './data-table.component.html',
-  styleUrls: ['./data-table.component.scss']
+  templateUrl: './data-table.component.html'
 })
-export class DataTableComponent implements OnInit, AfterViewInit {
+export class DataTableComponent implements OnInit {
   cdref: ChangeDetectorRef = inject(ChangeDetectorRef);
   apiService: ApiService = inject(ApiService);
   store: Store<{ data: DataState }> = inject(Store);
   dialog: MatDialog = inject(MatDialog);
   datePipe: DatePipe = inject(DatePipe);
+  loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   tableContents$: Observable<DataModel[]> | undefined;
   displayedColumns: string[] = ['sectiontitle', 'title', 'sectionsnippet', 'snippet', 'timestamp'];
   filter$ = new BehaviorSubject<string>('');
@@ -39,32 +39,21 @@ export class DataTableComponent implements OnInit, AfterViewInit {
   @ViewChild('tooltip') tooltip: MatTooltip | undefined;
 
   ngOnInit(): void {
-    // Fetch data from API and dispatch success action to store
+    this.loading$.next(true);
+    this.store.dispatch(loadData());
+
     this.apiService.getData().subscribe(data => {
       this.store.dispatch(loadDataSuccess({ data: data.query.search }));
-      this.cdref.detectChanges(); // Ensure change detection after dispatch
+      this.loading$.next(false);
+      this.cdref.detectChanges()
     });
 
-    // Subscribe to filtered data observable from store
     this.tableContents$ = this.store.pipe(select(selectFilteredData));
-
-    // Subscribe to loading state
-    this.store.pipe(select(selectLoading)).subscribe(loading => {
-      console.log('Loading state:', loading);
-    });
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.cdref.detectChanges(); // Ensure changes are detected
-      this.checkTruncationStatus();
-    }, 0);
   }
   
   applyFilter(filterValue: string): void {
-    // Dispatch filter action to store
     this.store.dispatch(setFilter({ filter: filterValue }));
-    this.cdref.detectChanges(); // Ensure changes are detected
+    this.cdref.detectChanges(); 
   }
 
 
@@ -77,14 +66,11 @@ export class DataTableComponent implements OnInit, AfterViewInit {
   onMouseEnter() {
     if (this.truncateContent && this.truncateContent.nativeElement) {
       const isTruncated = this.truncateContent.nativeElement.getAttribute('data-is-truncated');
-      console.log('Truncation Status:', isTruncated);
-  
       if (isTruncated === 'true') {
         this.tooltipMessage = 'Click here to view full text';
         this.tooltip?.show();
       }
     } else {
-      
     }
   }
 
@@ -92,23 +78,8 @@ export class DataTableComponent implements OnInit, AfterViewInit {
     this.tooltip?.hide();
   }
 
-  private checkTruncationStatus() {
-    if (this.truncateContent) {
-      const element = this.truncateContent.nativeElement; // Access element via directive
-      if (element) {
-        const isTruncated = element.getAttribute('data-is-truncated');
-        console.log('Truncation Status:', isTruncated);
-      } else {
-        console.warn('Native element is not defined.');
-      }
-    } else {
-      
-    }
-  }
-
   formatDate(timestamp: Date): string {
     return this.datePipe.transform(timestamp, 'MMM dd, yyyy') || '';
   }
-
 
 }

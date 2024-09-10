@@ -10,6 +10,10 @@ export const initialState: DataState = {
 
 export const dataReducer = createReducer(
     initialState,
+    on(loadData, state => ({
+      ...state,
+      loading: true
+    })),
     on(loadDataSuccess, (state, { data }) => ({
       ...state,
       data: data.map(item => ({

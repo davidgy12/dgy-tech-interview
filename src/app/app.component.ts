@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { RouterOutlet, RouterModule, Router, NavigationEnd } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 
@@ -12,11 +12,6 @@ import { CommonModule } from '@angular/common';
 export class AppComponent {
   title = 'dgy-klm-tech-interview';
 
-cdref: ChangeDetectorRef = inject(ChangeDetectorRef);
 router: Router = inject(Router);
 
-ngOnInit(): void {
-    this.cdref.detectChanges();
-    this.cdref.markForCheck();
-}
 }
